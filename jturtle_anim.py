@@ -89,8 +89,8 @@ class JTurtle:
         self.fill = (r, g, b)
         
     def done(self):
-        self.images[0].save('animation.gif', save_all=True, append_images=self.images[1:], optimize=False, duration=20, loop=0) 
-        display(ipd.Image("animation.gif"))
+        self.images[0].save('animation.png', save_all=True, append_images=self.images[1:], optimize=False, duration=20, loop=0) 
+        display(ipd.Image("animation.png"))
         self.reset()
 
 _jturtle = JTurtle()
