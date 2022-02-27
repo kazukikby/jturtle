@@ -2,8 +2,9 @@
 # インラインで表示する
 import math
 from PIL import Image, ImageDraw
-import IPython.display as ipd
-from IPython.display import display, clear_output
+from IPython.display import HTML, display, clear_output
+import io
+import base64
 
 class JTurtle:
     def __init__(self):
@@ -21,6 +22,7 @@ class JTurtle:
         self.fill = (0, 0, 0)
         self.speed = 2 
         self.images = []
+        self.idx = 0
         self.images.append(self.im.copy())
         self.msg = ""
     
@@ -87,10 +89,14 @@ class JTurtle:
         
     def color(self, r, g, b):
         self.fill = (r, g, b)
-        
+
     def done(self):
-        self.images[0].save('animation.png', save_all=True, append_images=self.images[1:], optimize=False, duration=20, loop=0) 
-        display(ipd.Image("animation.png"))
+        buf = io.BytesIO()
+        self.images[0].save(buf, format="PNG", save_all=True, append_images=self.images[1:], optimize=False, duration=20, loop=0) 
+        buf.seek(0)
+        img_str = f"""<img src="data:image/png;base64,{base64.b64encode(buf.getvalue()).decode('ascii')}" />"""
+        buf.close()
+        display(HTML(img_str))
         self.reset()
 
 _jturtle = JTurtle()
