@@ -21,13 +21,16 @@ class JTurtle:
         self.y = self.wh[1]/2
         self.is_pen_up = False        
         self.fill = (0, 0, 0)
-        self.speed = 2 
+        self.tspeed = 2 
         self.images = []
         self.idx = 0
         # self.images.append(self.im.copy())
         self.append_dummy_image()
         clear_output(wait=True)
     
+    def speed(self, val=2):
+        self.tspeed = val
+
     def show_progress(self):
         print("making frames:", self.idx)
         self.idx += 1
@@ -41,9 +44,9 @@ class JTurtle:
         self.images.append(self.im.copy())
         
     def fd(self, r):
-        for i in range(round(r/self.speed)):
-            nx = self.x + self.speed * math.cos(math.radians(self.angle))
-            ny = self.y + self.speed * math.sin(math.radians(self.angle))            
+        for i in range(r//self.tspeed):
+            nx = self.x + self.tspeed * math.cos(math.radians(self.angle))
+            ny = self.y + self.tspeed * math.sin(math.radians(self.angle))            
 
             if self.is_pen_up == False:
                 self.draw.line((self.x, self.y, nx, ny), fill=self.fill, width=2)
@@ -52,7 +55,19 @@ class JTurtle:
 
             self.x = nx
             self.y = ny
-    
+
+        # 端数の描画
+        nokori = r % self.tspeed
+        if nokori > 0:
+            nx = self.x + nokori * math.cos(math.radians(self.angle))
+            ny = self.y + nokori * math.sin(math.radians(self.angle))            
+            if self.is_pen_up == False:
+                self.draw.line((self.x, self.y, nx, ny), fill=self.fill, width=2)
+                self.append_image()
+                self.show_progress()
+            self.x = nx
+            self.y = ny
+            
     def circle(self, r):
         if self.is_pen_up == False:
             self.draw.ellipse((self.x-r, self.y-(2*r), self.x+r, self.y), fill=None, outline=self.fill, width=2)
@@ -119,6 +134,7 @@ color = _jturtle.color
 circle = _jturtle.circle
 ellipse = _jturtle.ellipse
 done = _jturtle.done
+speed = _jturtle.speed
 forward = fd
 left = lt
 right = rt
