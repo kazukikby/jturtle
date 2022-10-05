@@ -47,7 +47,7 @@ class JTurtle:
         self.images.append(self.im.copy())
         
     def fd(self, r):
-        for i in range(r//self.tspeed):
+        for i in range(int(r/self.tspeed)):
             nx = self.x + self.tspeed * math.cos(math.radians(self.angle))
             ny = self.y + self.tspeed * math.sin(math.radians(self.angle))            
 
