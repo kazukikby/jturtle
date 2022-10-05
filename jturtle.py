@@ -29,7 +29,10 @@ class JTurtle:
         clear_output(wait=True)
     
     def speed(self, val=2):
-        self.tspeed = val
+        if val < 2:
+            self.tspeed = 2
+        else:
+            self.tspeed = val
 
     def show_progress(self):
         print("making frames:", self.idx)
