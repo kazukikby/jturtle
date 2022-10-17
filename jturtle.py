@@ -20,14 +20,17 @@ class JTurtle:
         self.x = self.wh[0]/2
         self.y = self.wh[1]/2
         self.is_pen_up = False        
-        self.fill = (0, 0, 0)
+        self.pen_color = (0, 0, 0)
+        self.filling_color = None
         self.tspeed = 2 
         self.images = []
         self.idx = 0
         # self.images.append(self.im.copy())
         self.append_dummy_image()
         clear_output(wait=True)
+        self.msg = ""
     
+    # 数字が大きい方が速い．オリジナルは数字が小さいほうが速い．
     def speed(self, val=2):
         if val < 2:
             self.tspeed = 2
@@ -52,7 +55,7 @@ class JTurtle:
             ny = self.y + self.tspeed * math.sin(math.radians(self.angle))            
 
             if self.is_pen_up == False:
-                self.draw.line((self.x, self.y, nx, ny), fill=self.fill, width=2)
+                self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=1)
                 self.append_image()
                 self.show_progress()
 
@@ -65,7 +68,7 @@ class JTurtle:
             nx = self.x + nokori * math.cos(math.radians(self.angle))
             ny = self.y + nokori * math.sin(math.radians(self.angle))            
             if self.is_pen_up == False:
-                self.draw.line((self.x, self.y, nx, ny), fill=self.fill, width=2)
+                self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=1)
                 self.append_image()
                 self.show_progress()
             self.x = nx
@@ -73,13 +76,13 @@ class JTurtle:
             
     def circle(self, r):
         if self.is_pen_up == False:
-            self.draw.ellipse((self.x-r, self.y-(2*r), self.x+r, self.y), fill=None, outline=self.fill, width=2)
+            self.draw.ellipse((self.x-r, self.y-(2*r), self.x+r, self.y), fill=self.filling_color, outline=self.pen_color, width=2)
             self.append_image()
             self.show_progress()
 
     def ellipse(self, w, h):
         if self.is_pen_up == False:
-            self.draw.ellipse((self.x-w/2, self.y-h, self.x+w/2, self.y), fill=None, outline=self.fill, width=2)
+            self.draw.ellipse((self.x-w/2, self.y-h, self.x+w/2, self.y), fill=self.filling_color, outline=self.pen_color, width=2)
             self.append_image()
             self.show_progress()
 
@@ -97,7 +100,7 @@ class JTurtle:
     
     def goto(self, x, y):
         if self.is_pen_up == False:
-            self.draw.line((self.x, self.y, x, y), fill=self.fill, width=2)
+            self.draw.line((self.x, self.y, x, y), fill=self.pen_color, width=2)
             self.append_image()
             self.show_progress()
         self.x = x
@@ -107,8 +110,15 @@ class JTurtle:
         self.angle = -angle
         
     def color(self, r, g, b):
-        self.fill = (r, g, b)
+        self.pen_color = (r, g, b)
     
+    def fillcolor(self, r=None, g=None, b=None):
+        # begin_fill, end_fillは採用しない．塗りつぶさないときにはfillcolor(None)で
+        if r is not None and g is not None and b is not None and r >= 0 and g >= 0 and b >= 0:
+            self.filling_color = (r, g, b)
+        else:
+            self.filling_color = None
+
     def append_dummy_image(self):
         # 画像キャッシュ対策(最初のフレームに目立たない色で点を追加)
         rx = random.randrange(self.wh[0])
@@ -120,10 +130,18 @@ class JTurtle:
         buf = io.BytesIO()
         self.images[0].save(buf, format="PNG", save_all=True, append_images=self.images[1:], optimize=False, duration=20, loop=2) 
         buf.seek(0)
-        img_str = f"""<img src="data:image/png;base64,{base64.b64encode(buf.getvalue()).decode('ascii')}" />"""
+        # img_str = f"""<img src="data:image/png;base64,{base64.b64encode(buf.getvalue()).decode('ascii')}" />"""
+        img_str = f"""<div>{self.msg}</div><img src="data:image/png;base64,{base64.b64encode(buf.getvalue()).decode('ascii')}" />"""
         buf.close()
         display(HTML(img_str))
         self.reset()
+    
+    # for debug
+    def show_pos(self, text=None):
+        if text is not None:
+            self.msg += text + ":"
+        self.msg += f"({int(self.x)}, {int(self.y)}), "
+
 
 _jturtle = JTurtle()
 fd = _jturtle.fd
@@ -134,6 +152,7 @@ pd = _jturtle.pd
 seth = _jturtle.seth
 goto = _jturtle.goto
 color = _jturtle.color
+fillcolor = _jturtle.fillcolor
 circle = _jturtle.circle
 ellipse = _jturtle.ellipse
 done = _jturtle.done
@@ -145,3 +164,6 @@ penup = pu
 pendown = pd
 setheading = seth
 mainloop = done
+
+#for debug
+show_pos = _jturtle.show_pos
