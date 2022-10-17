@@ -55,7 +55,7 @@ class JTurtle:
             ny = self.y + self.tspeed * math.sin(math.radians(self.angle))            
 
             if self.is_pen_up == False:
-                self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=1)
+                self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=2)
                 self.append_image()
                 self.show_progress()
 
@@ -68,7 +68,7 @@ class JTurtle:
             nx = self.x + nokori * math.cos(math.radians(self.angle))
             ny = self.y + nokori * math.sin(math.radians(self.angle))            
             if self.is_pen_up == False:
-                self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=1)
+                self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=2)
                 self.append_image()
                 self.show_progress()
             self.x = nx
