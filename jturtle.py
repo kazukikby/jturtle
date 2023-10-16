@@ -25,6 +25,8 @@ class JTurtle:
         self.tspeed = 2 
         self.images = []
         self.idx = 0
+        self.is_filling = False
+        self.points = []
         # self.images.append(self.im.copy())
         self.append_dummy_image()
         clear_output(wait=True)
@@ -58,6 +60,8 @@ class JTurtle:
                 self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=2)
                 self.append_image()
                 self.show_progress()
+                if self.is_filling:
+                    self.points.append((nx, ny))
 
             self.x = nx
             self.y = ny
@@ -71,6 +75,8 @@ class JTurtle:
                 self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=2)
                 self.append_image()
                 self.show_progress()
+                if self.is_filling:
+                    self.points.append((nx, ny))
             self.x = nx
             self.y = ny
             
@@ -105,6 +111,8 @@ class JTurtle:
             self.show_progress()
         self.x = x
         self.y = y
+        if self.is_filling:
+            self.points.append((x, y))
                 
     def seth(self, angle):
         self.angle = -angle
@@ -141,6 +149,15 @@ class JTurtle:
         if text is not None:
             self.msg += text + ":"
         self.msg += f"({int(self.x)}, {int(self.y)}), "
+    
+    def begin_fill(self):
+        self.points = [(self.x, self.y)]
+        self.is_filling = True
+    
+    def end_fill(self):
+        if len(self.points) > 0 and self.is_filling:
+            self.draw.polygon(self.points, fill=self.filling_color, outline=self.pen_color)
+            self.is_filling = False
 
 
 _jturtle = JTurtle()
@@ -157,6 +174,9 @@ circle = _jturtle.circle
 ellipse = _jturtle.ellipse
 done = _jturtle.done
 speed = _jturtle.speed
+begin_fill = _jturtle.begin_fill
+end_fill = _jturtle.end_fill
+
 forward = fd
 left = lt
 right = rt
