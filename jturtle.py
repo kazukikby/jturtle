@@ -157,6 +157,8 @@ class JTurtle:
     def end_fill(self):
         if len(self.points) > 0 and self.is_filling:
             self.draw.polygon(self.points, fill=self.filling_color, outline=self.pen_color)
+            self.append_image()
+            self.show_progress()
             self.is_filling = False
 
 
