@@ -134,6 +134,10 @@ class JTurtle:
         self.append_image()
 
     def done(self):
+        for i in range(20): # 1回目のループで少し停止
+            self.append_dummy_image()
+            self.show_progress()
+
         buf = io.BytesIO()
         self.images[0].save(buf, format="PNG", save_all=True, append_images=self.images[1:], optimize=False, duration=20, loop=2) 
         buf.seek(0)
