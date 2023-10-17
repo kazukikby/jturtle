@@ -60,8 +60,6 @@ class JTurtle:
                 self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=2)
                 self.append_image()
                 self.show_progress()
-                if self.is_filling:
-                    self.points.append((nx, ny))
 
             self.x = nx
             self.y = ny
@@ -75,10 +73,11 @@ class JTurtle:
                 self.draw.line((self.x, self.y, nx, ny), fill=self.pen_color, width=2)
                 self.append_image()
                 self.show_progress()
-                if self.is_filling:
-                    self.points.append((nx, ny))
             self.x = nx
             self.y = ny
+
+        if self.is_filling:
+            self.points.append((nx, ny))
             
     def circle(self, r):
         if self.is_pen_up == False:
